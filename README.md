@@ -89,14 +89,16 @@ asserting a bound that cannot hold.
 
 ## Running
 
-The app uses JavaScript modules, so it must be served rather than opened from
-the file system:
+The page loads its JavaScript as ES modules, which browsers refuse to fetch
+over `file://`. So it needs serving by any static server rather than opening
+`index.html` directly:
 
 ```bash
-npm start          # or: python3 -m http.server 8000
+python3 -m http.server 8000   # or, with Node installed: npm start
 ```
 
-Then open <http://localhost:8000>. The page makes no network requests.
+Then open <http://localhost:8000>. Nothing else needs the network: there is not
+a single `fetch` in the source.
 
 ## Tests
 
