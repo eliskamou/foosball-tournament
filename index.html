@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Offline foosball tournament organiser: round-robin scheduling across tables and time slots, editable at any point, with live standings.">
+  <meta name="color-scheme" content="light dark">
+  <title>Foosball Tournament</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>⚽</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#schedule">Skip to the schedule</a>
+
+  <header class="page-header">
+    <div class="page-heading">
+      <p class="eyebrow">Tournament organiser</p>
+      <h1 id="pageTitle">Foosball Tournament</h1>
+      <p class="muted" id="pageSubtitle">Add your teams and the schedule builds itself.</p>
+    </div>
+    <div class="status-card" id="statusCard" role="status" aria-live="polite" aria-atomic="true"></div>
+  </header>
+
+  <main class="layout">
+    <section class="panel setup" aria-labelledby="setupHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="setupHeading">Teams</h2>
+          <p class="muted">Add or remove teams at any time. Scores already recorded are kept.</p>
+        </div>
+        <span class="counter" id="teamCounter"></span>
+      </div>
+
+      <form id="teamForm" class="add-row">
+        <label class="sr-only" for="teamName">Team name</label>
+        <input id="teamName" type="text" placeholder="Team name — or paste several, one per line" autocomplete="off" enterkeyhint="done">
+        <button class="primary" type="submit">Add</button>
+      </form>
+      <ul id="teamList" class="team-list"></ul>
+      <p class="muted" id="teamsHint"></p>
+
+      <details id="settingsPanel" class="settings">
+        <summary>Tournament settings</summary>
+        <form id="settingsForm" class="settings-grid">
+          <label class="span-2">Title
+            <input id="tournamentTitle" type="text" maxlength="60">
+          </label>
+          <label>Tables
+            <input id="tableCount" type="number" min="1" max="8" inputmode="numeric">
+          </label>
+          <label>Start time
+            <input id="startTime" type="time">
+          </label>
+          <label>Match length
+            <span class="with-unit"><input id="matchMinutes" type="number" min="1" max="240" inputmode="numeric"><span>min</span></span>
+          </label>
+          <label>Break between slots
+            <span class="with-unit"><input id="breakMinutes" type="number" min="0" max="120" inputmode="numeric"><span>min</span></span>
+          </label>
+          <label>Points for a win
+            <input id="winPoints" type="number" min="0" max="20" inputmode="numeric">
+          </label>
+          <label>Points for a draw
+            <input id="drawPoints" type="number" min="0" max="20" inputmode="numeric">
+          </label>
+          <label class="span-2">First tie-break
+            <select id="tieBreak"></select>
+          </label>
+          <button class="primary span-2" type="submit">Apply settings</button>
+        </form>
+      </details>
+    </section>
+
+    <section class="panel matches" id="schedule" aria-labelledby="scheduleHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="scheduleHeading">Schedule</h2>
+          <p class="muted" id="scheduleHint">Every team plays every other team once.</p>
+        </div>
+        <div class="actions">
+          <button id="undoButton" type="button" disabled>Undo</button>
+          <button id="reoptimiseButton" type="button">Re-balance remaining</button>
+        </div>
+      </div>
+      <p id="conflictBanner" class="banner warning" hidden></p>
+      <div id="slotList" class="slot-list"></div>
+    </section>
+
+    <aside class="panel stats" aria-labelledby="standingsHeading">
+      <h2 id="standingsHeading">Standings</h2>
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Current standings</caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Team</th>
+              <th scope="col" title="Played">P</th>
+              <th scope="col" title="Points">Pts</th>
+              <th scope="col" title="Won">W</th>
+              <th scope="col" title="Drawn">D</th>
+              <th scope="col" title="Lost">L</th>
+              <th scope="col" title="Goals for">GF</th>
+              <th scope="col" title="Goals against">GA</th>
+              <th scope="col" title="Goal difference">GD</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+      </div>
+      <p class="muted" id="rankingHint"></p>
+
+      <h2 class="spaced">Fair split</h2>
+      <p class="muted">How the planner divided the tables and the waiting.</p>
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Table and rest distribution per team</caption>
+          <thead>
+            <tr>
+              <th scope="col">Team</th>
+              <th scope="col">Tables</th>
+              <th scope="col" title="Most slots spent waiting between two matches">Longest wait</th>
+              <th scope="col">Next up</th>
+            </tr>
+          </thead>
+          <tbody id="fairnessBody"></tbody>
+        </table>
+      </div>
+    </aside>
+
+    <section class="panel data-actions" aria-label="Saving and loading">
+      <p class="muted" id="saveHint"></p>
+      <div class="actions">
+        <button id="exportButton" type="button">Save to file</button>
+        <button id="importButton" type="button">Load from file</button>
+        <input id="fileInput" type="file" accept="application/json,.json" hidden>
+        <button id="printButton" type="button">Print schedule</button>
+        <button id="resetButton" class="danger" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

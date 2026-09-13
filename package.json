@@ -1,0 +1,14 @@
+{
+  "name": "foosball-tournament",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A browser-based foosball tournament organiser that stays editable once the schedule exists.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "python3 -m http.server 8000"
+  }
+}
