@@ -10,28 +10,25 @@ state lives in the browser.
 
 ## Why this exists
 
-I organise foosball tournaments and evaluated the existing online tools first.
-They were rejected on three counts:
+Organising a foosball tournament, I went looking for a tool to handle the
+scheduling. The ones I found were paid, or wanted an account before they would
+do anything, or locked the schedule as soon as it was generated. Usually all
+three.
 
-- most are paid, or put the useful parts behind a subscription;
-- they require an account before they will generate anything;
-- the schedule is effectively immutable once generated — in particular the team
-  list is fixed at creation time.
-
-The third is the blocking one. In practice the inputs change *after* the
+The locked schedule was the real problem. The inputs keep changing after the
 schedule exists:
 
-| Situation | Requirement |
+| Situation | What it needs |
 | --- | --- |
-| A team arrives late and wants in | Add a team mid-tournament, keeping recorded results |
-| A team leaves after two matches | Remove a team, keeping everyone else's results |
-| A name was entered wrong | Rename at any point, everywhere it appears |
-| A table frees up early | Reassign a match's table, or move it to another slot |
-| Matches overrun | See how far behind the schedule is running |
+| A team turns up late and wants in | Add a team mid-tournament, keep the scores already recorded |
+| A team leaves after two matches | Remove a team, keep everyone else's scores |
+| A name was typed wrong | Rename it anywhere, any time |
+| A table frees up early | Move a match to another table, or to another slot |
+| Matches overrun | See how far behind you are running |
 
-The tools I tried handled these by regenerating from scratch, which discards
-results. So the design constraint here is: **every input stays editable at any
-point, and no edit discards a result that has already been recorded.**
+Every tool I tried handled these by regenerating the schedule and throwing away
+the scores. This one is built the other way round: everything stays editable,
+and no edit loses a result.
 
 ## Features
 
